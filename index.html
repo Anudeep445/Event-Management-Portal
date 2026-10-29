@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6fb">
+  <title>Event Management Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#dashboard" aria-label="Event management dashboard"><span class="brand-mark">E</span><span>Event<span class="brand-light">ory</span><small>MANAGEMENT PORTAL</small></span></a>
+    <div class="top-actions"><span class="today" id="todayLabel"></span><button class="icon-button" id="themeToggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">◐</button></div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <span class="nav-label">WORKSPACE</span>
+      <a class="nav-link active" href="#dashboard">⌂ <span>Dashboard</span></a>
+      <a class="nav-link" href="#events">▦ <span>Events</span></a>
+      <a class="nav-link" href="#registrations">☷ <span>Registrations</span></a>
+      <span class="nav-label nav-spaced">PREFERENCES</span>
+      <a class="nav-link" href="#settings">⚙ <span>Settings</span></a>
+      <a class="nav-link" href="#about">ⓘ <span>About</span></a>
+      <div class="sidebar-note"><span class="note-icon">✦</span><strong>Make every event count.</strong><p>Keep your plans and people together in one place.</p></div>
+    </aside>
+    <main class="main-content">
+      <div id="message" class="message hidden" role="status" aria-live="polite"></div>
+      <section id="dashboard" class="page-section">
+        <div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1>Your events, at a glance</h1><p class="subheading">A clear view of what’s happening and who’s joining.</p></div><a class="button primary" href="#events">＋ Create event</a></div>
+        <div class="stats">
+          <article class="stat-card"><span class="stat-icon violet">▦</span><span class="stat-label">Total events</span><strong id="totalEvents">0</strong><small>Across all categories</small></article>
+          <article class="stat-card"><span class="stat-icon blue">☷</span><span class="stat-label">Registrations</span><strong id="totalRegistrations">0</strong><small>Participant sign-ups</small></article>
+          <article class="stat-card"><span class="stat-icon green">↗</span><span class="stat-label">Upcoming events</span><strong id="upcomingEvents">0</strong><small>Ready to happen</small></article>
+          <article class="stat-card"><span class="stat-icon amber">◷</span><span class="stat-label">Past events</span><strong id="pastEvents">0</strong><small>Completed events</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <section class="surface upcoming-panel"><div class="section-heading"><div><p class="eyebrow">COMING UP</p><h2>Next on your calendar</h2></div><a class="text-link" href="#events">All events →</a></div><div id="upcomingList" class="upcoming-list"></div></section>
+          <section class="surface category-panel"><div class="section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Events by category</h2></div></div><div id="categorySummary" class="category-summary"></div></section>
+        </div>
+      </section>
+
+      <section id="events" class="page-section section-gap">
+        <div class="page-heading"><div><p class="eyebrow">EVENT MANAGEMENT</p><h1>Events</h1><p class="subheading">Create, organize, and keep track of your events.</p></div></div>
+        <div class="events-layout">
+          <section class="surface form-panel"><div class="section-heading"><div><p class="eyebrow">EVENT DETAILS</p><h2 id="formTitle">Create an event</h2></div></div>
+            <form id="eventForm" novalidate>
+              <input type="hidden" id="eventId">
+              <label>Event name <input required id="eventName" maxlength="70" placeholder="e.g. Annual Tech Summit"></label>
+              <div class="form-row"><label>Date <input required type="date" id="eventDate"></label><label>Time <input required type="time" id="eventTime"></label></div>
+              <label>Venue <input required id="eventLocation" maxlength="80" placeholder="Building, room, or address"></label>
+              <div class="form-row"><label>Category <select id="eventCategory"><option>Conference</option><option>Workshop</option><option>Networking</option><option>Celebration</option><option>Other</option></select></label><label>Capacity <input id="eventCapacity" type="number" min="1" step="1" placeholder="No limit"></label></div>
+              <label>Organizer <input id="eventOrganizer" maxlength="60" placeholder="Organizer name"></label>
+              <label>Description <textarea id="eventDescription" rows="3" maxlength="500" placeholder="What should attendees know?"></textarea></label>
+              <div class="form-actions"><button id="saveBtn" class="button primary" type="submit">Create event</button><button id="cancelBtn" class="button secondary hidden" type="button">Cancel</button></div>
+            </form>
+          </section>
+          <section class="events-content"><div class="surface filter-panel"><label class="search-wrap"><span>⌕</span><input type="search" id="searchInput" placeholder="Search name, venue, organizer..."></label><label class="filter-control"><span>Category</span><select id="categoryFilter"><option value="all">All categories</option></select></label><label class="filter-control"><span>Status</span><select id="statusFilter"><option value="all">All events</option><option value="upcoming">Upcoming</option><option value="past">Past</option></select></label><label class="filter-control"><span>Sort by</span><select id="sortSelect"><option value="date">Soonest first</option><option value="newest">Newest first</option><option value="alpha">Name A–Z</option></select></label></div>
+            <div class="list-heading"><h2>All events <span class="count-pill" id="visibleCount">0</span></h2></div><div id="eventList" class="event-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="registrations" class="page-section section-gap">
+        <div class="page-heading"><div><p class="eyebrow">ATTENDEE MANAGEMENT</p><h1>Registrations</h1><p class="subheading">Find participants and manage event sign-ups.</p></div><button class="button secondary" id="exportBtn" type="button">↓ Export CSV</button></div>
+        <section class="surface registration-form-panel"><div class="section-heading"><div><p class="eyebrow">NEW SIGN-UP</p><h2>Register a participant</h2></div></div><form id="regForm" class="participant-form" novalidate><label>Full name <input id="regName" maxlength="80" required placeholder="Participant name"></label><label>Email address <input id="regEmail" type="email" maxlength="120" required placeholder="name@example.com"></label><label>Phone number <input id="regPhone" type="tel" maxlength="20" required placeholder="+91 98765 43210"></label><label>Event <select id="regEvent" required></select></label><button class="button primary" type="submit">Add registration</button></form></section>
+        <section class="surface registration-panel"><div class="registration-filters"><label class="search-wrap"><span>⌕</span><input id="registrationSearch" type="search" placeholder="Search name or email..."></label><label class="filter-control"><span>Event</span><select id="registrationEventFilter"><option value="all">All events</option></select></label></div><div class="table-wrap"><table><thead><tr><th>PARTICIPANT</th><th>EMAIL</th><th>PHONE</th><th>EVENT</th><th>REGISTERED</th><th>STATUS</th><th></th></tr></thead><tbody id="registrationRows"></tbody></table></div><div id="registrationEmpty" class="table-empty hidden">No registrations match your search.</div></section>
+      </section>
+
+      <section id="settings" class="page-section section-gap"><div class="page-heading"><div><p class="eyebrow">PREFERENCES</p><h1>Settings</h1><p class="subheading">Manage local demo data and display preferences.</p></div></div><div class="surface settings-card"><div><h2>Reset demo data</h2><p>Replace the current events and registrations with the original sample events. This action cannot be undone.</p></div><button id="resetBtn" class="button danger" type="button">Reset demo data</button></div></section>
+      <section id="about" class="page-section section-gap"><div class="page-heading"><div><p class="eyebrow">ABOUT</p><h1>About this portal</h1></div></div><div class="surface about-card"><span class="brand-mark">E</span><div><h2>Eventory · Event Management Portal</h2><p>A lightweight event administration dashboard for planning events, managing registrations, and keeping participant details organized. Built as an internship project with browser-based storage.</p><p><strong>Intern:</strong> MEKALA ANUDEEP &nbsp; <strong>Intern ID:</strong> CITS9948 &nbsp; <strong>Duration:</strong> 4 weeks</p></div></div></section>
+      <footer>© <span id="year"></span> Eventory · Event Management Portal <span>Internship project · CITS9948</span></footer>
+    </main>
+  </div>
+  <dialog id="detailsDialog" class="details-dialog"><button class="dialog-close" id="closeDialog" aria-label="Close" type="button">×</button><div id="dialogContent"></div><div class="dialog-footer"><button class="button secondary" id="printBtn" type="button">Print details</button></div></dialog>
+  <script src="script.js"></script>
+</body>
+</html>
